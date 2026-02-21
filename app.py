@@ -35,6 +35,21 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
+
+        if not name:
+            return render_template("register.html", error="Name cannot be empty")
+        if not email:
+            return render_template("register.html", error="Email cannot be empty")
+        if not password:
+            return render_template("register.html", error="Password cannot be empty")
+        if len(password) < 6:
+            return render_template("register.html", error="Password must be at least 6 characters")
+
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return render_template("register.html", error="Email already registered")
+
+
         
         new_user = User(name=name, email=email, password=password)
         db.session.add(new_user)
